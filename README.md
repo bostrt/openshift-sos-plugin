@@ -1,0 +1,1 @@
+# OpenShift SOS Plugin
