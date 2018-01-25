@@ -17,13 +17,27 @@ Available Commands:
 ```
 3. Finally, run the plugin:
 ```
-# oc plugin sos project -n testing
+# oc plugin sos -n testing
 Data capture complete and archived in /tmp/oc-sos-testing-2018-01-25.tar.xz
 ```
 # Usage
 
-After installation, you can run the plugin using the `oc` command. The prequisite is that you are logged into a cluster via the `oc` command:
+After installation, you can run the plugin using the `oc` command. The prequisite is that you are logged into a cluster via the `oc` command.
+
+Default behavior is to use your current namespace/project active in `oc`:
 ```
-# oc plugin sos project -n testing
+# oc plugin sos
+Data capture complete and archived in /tmp/oc-sos-testing-2018-01-25.tar.xz
+```
+
+You can also specify another namespace/project using the standard OpenShift `-n` flag:
+```
+# oc plugin sos -n testing
+Data capture complete and archived in /tmp/oc-sos-testing-2018-01-25.tar.xz
+```
+
+If you want to change the output format, use the standard `-o` flag. JSON output is default:
+```
+# oc plugin sos -n testing -o yaml
 Data capture complete and archived in /tmp/oc-sos-testing-2018-01-25.tar.xz
 ```
