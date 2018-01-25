@@ -1,0 +1,11 @@
+name: "sos"
+shortDesc: "Plugin for gathering various types of data from OpenShift."
+tree:
+  - name: "project"
+    shortDesc: "Gather data from OpenShift project."
+    command: "./sos.sh"
+    flags:
+      - name: "output"
+        desc: "Output format of data (json [default] or yaml)."
+        shorthand: "o"
+        defValue: "json"
