@@ -6,7 +6,7 @@
 
 1. Clone repository into your `~/.kube/plugins` directory:
 ```
-# git clone https://github.com/bostrt/openshift-sos-plugin ~/.kube/plugins/
+# git clone https://github.com/bostrt/openshift-sos-plugin ~/.kube/plugins/openshift-sos-plugin
 ```
 2. Ensure the plugin is available by running:
 ```
