@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# precheck
+oc whoami &> /dev/null
+if [ $? -ne 0 ]; then
+	echo 'Please login to a cluster before running this plugin. (e.g. oc login)'
+	exit
+fi
+
 # initialize
 DEST=/tmp/oc-sos/$KUBECTL_PLUGINS_CURRENT_NAMESPACE
 mkdir -p $DEST
@@ -17,5 +24,5 @@ tar caf /tmp/oc-sos-${KUBECTL_PLUGINS_CURRENT_NAMESPACE}-$(date +%F).tar.xz -C /
 echo "Data capture complete and archived in /tmp/oc-sos-${KUBECTL_PLUGINS_CURRENT_NAMESPACE}-$(date +%F).tar.xz"
 
 # cleanup
-rm -r $DEST
+rm -r /tmp/oc-sos
 
