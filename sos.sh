@@ -23,8 +23,15 @@ oc get event -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE -w &> $DEST/oc-get-event.txt 
 WATCH_PID=$!
 oc status -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE &> $DEST/oc-status.txt
 oc get project -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE -o ${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT} &> $DEST/oc-get-project.${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT}
-oc get all,ds,cm,secret,pvc,hpa,quota,limits,sa,rolebinding -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE -o ${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT} &> $DEST/oc-get-all.${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT}
-oc get all,ds,cm,secret,pvc,hpa,quota,limits,sa,rolebinding -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE -o wide &> $DEST/oc-get-all.txt
+TARGET_OBJECTS="all,ds,pvc,hpa,quota,limits,sa,rolebinding"
+if [ "$KUBECTL_PLUGINS_LOCAL_FLAG_INCLUDE_CONFIGMAP" == "true" ]; then
+    TARGET_OBJECTS="$TARGET_OBJECTS,cm"
+fi
+if [ "$KUBECTL_PLUGINS_LOCAL_FLAG_INCLUDE_SECRET" == "true" ]; then
+    TARGET_OBJECTS="$TARGET_OBJECTS,secret"
+fi
+oc get $TARGET_OBJECTS -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE -o ${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT} &> $DEST/oc-get-all.${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT}
+oc get $TARGET_OBJECTS -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE -o wide &> $DEST/oc-get-all.txt
 PODS=$(oc get pod -o name -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE)
 for pod in $PODS; do
   CONTAINERS=$(oc get $pod --template='{{range .spec.containers}}{{.name}} {{end}}' -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE)
