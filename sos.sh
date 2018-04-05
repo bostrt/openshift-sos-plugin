@@ -40,6 +40,17 @@ for pod in $PODS; do
     oc logs -p $pod --container=$c --timestamps -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE &> $DEST/${pod//\//-}_${c//\//-}.previous.log
   done
 done
+if [ $KUBECTL_PLUGINS_CURRENT_NAMESPACE == "openshift-infra" ]; then
+  for casspod in $(oc get pods -n openshift-infra -o jsonpath='{range .items[*].metadata}{.name}{"\n"}{end}' | grep cassandra); do
+    oc -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE exec $casspod -- nodetool status &> $DEST/status-$casspod.txt
+    oc -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE exec $casspod -- nodetool tpstats &> $DEST/tpstats-$casspod.txt
+    oc -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE exec $casspod -- nodetool proxyhistograms &> $DEST/proxyhistograms-$casspod.txt
+    oc -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE exec $casspod -- nodetool tablestats hawkular_metrics &> $DEST/tablestats-hawkular_metrics-$casspod.txt
+    oc -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE exec $casspod -- nodetool tablehistograms hawkular_metrics data &> $DEST/tablehistograms-hawkular_metrics-data-$casspod.txt
+    oc -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE exec $casspod -- nodetool tablehistograms hawkular_metrics metrics_tags_idx &> $DEST/tablehistograms-hawkular_metrics-metrics_tags_tdx-$casspod.txt
+  done
+  oc get pods --all-namespaces | wc -l &> $DEST/total-number-of-pods.txt
+fi
 kill $WATCH_PID
 
 # compress
@@ -50,4 +61,3 @@ echo "Data capture complete and archived in $DEST_FILE"
 
 # cleanup
 rm -r $TMP_DIR
-
