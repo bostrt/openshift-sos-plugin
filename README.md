@@ -3,6 +3,7 @@
 `openshift-sos-plugin` is an [`oc`](https://docs.openshift.org/latest/cli_reference/index.html) plugin to aid with gather information (status, logging, configuration, etc) from your OpenShift cluster. 
 
 *NOTE*: OpenShift CLI Plugins were added in v3.7 so make sure your `oc` binary version is up-to-date.
+
 *NOTE*: The OpenShfit SOS Plugin utilizes a bash script. Make sure you are running from a bash interpreter before executing!
 
 # Installation
