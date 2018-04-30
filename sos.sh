@@ -23,7 +23,7 @@ oc get event -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE -w &> $DEST/oc-get-event.txt 
 WATCH_PID=$!
 oc status -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE &> $DEST/oc-status.txt
 oc get project -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE -o ${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT} &> $DEST/oc-get-project.${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT}
-TARGET_OBJECTS="all,ds,pvc,hpa,quota,limits,sa,rolebinding"
+TARGET_OBJECTS="all,ds,pvc,hpa,quota,limits,sa,rolebinding,replicasets"
 if [ "$KUBECTL_PLUGINS_LOCAL_FLAG_INCLUDE_CONFIGMAP" == "true" ]; then
     TARGET_OBJECTS="$TARGET_OBJECTS,cm"
 fi
