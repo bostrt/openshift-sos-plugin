@@ -18,9 +18,8 @@ set -x
 
 # data capture
 oc version &> $DEST/oc-version.txt
-# Without -w, we cannot get full timestamps, so watch it and kill later
-oc get event -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE -w &> $DEST/oc-get-event.txt &
-WATCH_PID=$!
+# Without -w, we cannot get full timestamps, so watch it with timeout command
+timeout 15 oc get event -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE -w &> $DEST/oc-get-event.txt
 oc status -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE &> $DEST/oc-status.txt
 oc get project -n $KUBECTL_PLUGINS_CURRENT_NAMESPACE -o ${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT} &> $DEST/oc-get-project.${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT}
 TARGET_OBJECTS="all,ds,pvc,hpa,quota,limits,sa,rolebinding,replicasets"
@@ -51,7 +50,6 @@ if [ $KUBECTL_PLUGINS_CURRENT_NAMESPACE == "openshift-infra" ]; then
   done
   oc get pods --all-namespaces | wc -l &> $DEST/total-number-of-pods.txt
 fi
-kill $WATCH_PID
 
 # compress
 DEST_FILE=/tmp/oc-sos-${KUBECTL_PLUGINS_CURRENT_NAMESPACE}-$(date +%Y%m%d-%H%M%S).tar.xz
