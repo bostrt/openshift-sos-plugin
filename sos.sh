@@ -46,6 +46,10 @@ for pod in $PODS; do
   done
 done
 
+# non-namespaced objects
+oc get storageclass -o wide &> $DEST/oc-get-storageclass.txt
+oc get storageclass -o ${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT} &> $DEST/oc-get-storageclass.${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT}
+
 # openshift-infra
 if [ $KUBECTL_PLUGINS_CURRENT_NAMESPACE == "openshift-infra" ]; then
   for casspod in $($OC_CMD get pods -o jsonpath='{range .items[*].metadata}{.name}{"\n"}{end}' | grep cassandra); do
@@ -56,7 +60,29 @@ if [ $KUBECTL_PLUGINS_CURRENT_NAMESPACE == "openshift-infra" ]; then
     $OC_CMD exec $casspod -- nodetool tablehistograms hawkular_metrics data &> $DEST/tablehistograms-hawkular_metrics-data-$casspod.txt
     $OC_CMD exec $casspod -- nodetool tablehistograms hawkular_metrics metrics_tags_idx &> $DEST/tablehistograms-hawkular_metrics-metrics_tags_tdx-$casspod.txt
   done
-  oc get pods --all-namespaces | wc -l &> $DEST/total-number-of-pods.txt
+fi
+
+# cluster-admin level objects
+if [ "$KUBECTL_PLUGINS_LOCAL_FLAG_INCLUDE_ADMIN" == "true" ]; then
+  if [ "$(oc auth can-i get pods -n default)" == "yes" ]; then
+    oc get pods -o wide --all-namespaces &> $DEST/all-pods.txt
+    cat $DEST/all-pods.txt | wc -l &> $DEST/total-number-of-pods.txt
+  fi
+  if [ "$(oc auth can-i get nodes)" == "yes" ]; then
+    oc get node -o wide --show-labels &> $DEST/oc-get-node.txt
+    oc get node -o ${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT} &> $DEST/oc-get-node.${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT}
+    oc describe node &> $DEST/oc-describe-node.txt
+  fi
+  if [ "$(oc auth can-i get hostsubnet)" == "yes" ]; then
+    oc get hostsubnet &> $DEST/oc-get-hostsubnet.txt
+  fi
+  if [ "$(oc auth can-i get clusterrolebinding)" == "yes" ]; then
+    oc get clusterrolebinding &> $DEST/oc-get-clusterrolebinding.txt
+  fi
+  if [ "$(oc auth can-i get pv)" == "yes" ]; then
+    oc get pv &> $DEST/oc-get-clusterrolebinding.txt
+    oc get pv -o ${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT} &> $DEST/oc-get-clusterrolebinding.${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT}
+  fi
 fi
 
 # compress

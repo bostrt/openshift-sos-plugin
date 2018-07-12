@@ -12,3 +12,6 @@ flags:
   - name: "include-configmap"
     desc: "Dump configmap (true [default] or false)"
     defValue: "true"
+  - name: "include-admin"
+    desc: "Dump cluster-admin level objects such as node,hostsubnet,clusterrolebinding,pv (true [default] or false)"
+    defValue: "true"
