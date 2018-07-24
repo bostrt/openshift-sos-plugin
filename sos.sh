@@ -80,8 +80,8 @@ if [ "$KUBECTL_PLUGINS_LOCAL_FLAG_INCLUDE_ADMIN" == "true" ]; then
     oc get clusterrolebinding &> $DEST/oc-get-clusterrolebinding.txt
   fi
   if [ "$(oc auth can-i get pv)" == "yes" ]; then
-    oc get pv &> $DEST/oc-get-clusterrolebinding.txt
-    oc get pv -o ${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT} &> $DEST/oc-get-clusterrolebinding.${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT}
+    oc get pv &> $DEST/oc-get-pv.txt
+    oc get pv -o ${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT} &> $DEST/oc-get-pv.${KUBECTL_PLUGINS_LOCAL_FLAG_OUTPUT}
   fi
 fi
 
